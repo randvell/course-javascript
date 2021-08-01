@@ -64,9 +64,6 @@ function reduce(array, fn, initial) {
 function upperProps(obj) {
   const props = [];
   for (const key in obj) {
-    // этот код будет вызван для каждого свойства объекта
-    // ..и выведет имя свойства и его значение
-
     props.push(key.toUpperCase());
   }
 
@@ -87,7 +84,8 @@ function upperProps(obj) {
 function createProxy(obj) {
   return new Proxy(obj, {
     set(target, key, value) {
-      return (target[key] = value * value);
+      target[key] = value * value;
+      return true;
     },
   });
 }
