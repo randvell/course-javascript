@@ -10,7 +10,12 @@
  Пример:
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
-function createDivWithText(text) {}
+function createDivWithText(text) {
+  const element = document.createElement('div');
+  element.textContent = text;
+
+  return element;
+}
 
 /*
  Задание 2:
@@ -20,7 +25,9 @@ function createDivWithText(text) {}
  Пример:
    prepend(document.querySelector('#one'), document.querySelector('#two')) // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
  */
-function prepend(what, where) {}
+function prepend(what, where) {
+  where.prepend(what);
+}
 
 /*
  Задание 3:
@@ -41,7 +48,18 @@ function prepend(what, where) {}
 
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
-function findAllPSiblings(where) {}
+function findAllPSiblings(where) {
+  const result = [];
+
+  for (const element of where.children) {
+    const next = element.nextElementSibling;
+    if (next && next.nodeName === 'P') {
+      result.push(element);
+    }
+  }
+
+  return result;
+}
 
 /*
  Задание 4:
@@ -63,7 +81,7 @@ function findAllPSiblings(where) {}
 function findError(where) {
   const result = [];
 
-  for (const child of where.childNodes) {
+  for (const child of where.children) {
     result.push(child.textContent);
   }
 
@@ -82,7 +100,13 @@ function findError(where) {
    После выполнения функции, дерево <div></div>привет<p></p>loftchool!!!
    должно быть преобразовано в <div></div><p></p>
  */
-function deleteTextNodes(where) {}
+function deleteTextNodes(where) {
+  for (const element of where.childNodes) {
+    if (element.nodeType === 3) {
+      where.removeChild(element);
+    }
+  }
+}
 
 /*
  Задание 6:
@@ -95,7 +119,19 @@ function deleteTextNodes(where) {}
    После выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
-function deleteTextNodesRecursive(where) {}
+function deleteTextNodesRecursive(where) {
+  const elements = where.childNodes;
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    const elementType = element.nodeType;
+    if (elementType === Node.TEXT_NODE) {
+      where.removeChild(element);
+      i--;
+    } else if (elementType === Node.ELEMENT_NODE) {
+      deleteTextNodesRecursive(element);
+    }
+  }
+}
 
 /*
  Задание 7 *:
@@ -117,41 +153,94 @@ function deleteTextNodesRecursive(where) {}
      texts: 3
    }
  */
-function collectDOMStat(root) {}
+function collectDOMStat(root) {
+  const result = {
+    tags: {},
+    classes: {},
+    texts: 0,
+  };
+
+  function walk(root) {
+    for (const node of root.childNodes) {
+      const nodeType = node.nodeType;
+
+      if (nodeType === Node.TEXT_NODE) {
+        result.texts++;
+      } else if (nodeType === Node.ELEMENT_NODE) {
+        // Добавляем тэг элемента
+        if (node.tagName in result.tags) {
+          result.tags[node.tagName]++;
+        } else {
+          result.tags[node.tagName] = 1;
+        }
+
+        // Добавляем классы элементов
+        for (const nodeClass of node.classList) {
+          if (nodeClass in result.classes) {
+            result.classes[nodeClass]++;
+          } else {
+            result.classes[nodeClass] = 1;
+          }
+        }
+
+        walk(node);
+      }
+    }
+  }
+
+  walk(root);
+  return result;
+}
 
 /*
- Задание 8 *:
+     Задание 8 *:
 
- 8.1: Функция должна отслеживать добавление и удаление элементов внутри элемента переданного в параметре where
- Как только в where добавляются или удаляются элементы,
- необходимо сообщать об этом при помощи вызова функции переданной в параметре fn
+     8.1: Функция должна отслеживать добавление и удаление элементов внутри элемента переданного в параметре where
+     Как только в where добавляются или удаляются элементы,
+     необходимо сообщать об этом при помощи вызова функции переданной в параметре fn
 
- 8.2: При вызове fn необходимо передавать ей в качестве аргумента объект с двумя свойствами:
-   - type: типа события (insert или remove)
-   - nodes: массив из удаленных или добавленных элементов (в зависимости от события)
+     8.2: При вызове fn необходимо передавать ей в качестве аргумента объект с двумя свойствами:
+       - type: типа события (insert или remove)
+       - nodes: массив из удаленных или добавленных элементов (в зависимости от события)
 
- 8.3: Отслеживание должно работать вне зависимости от глубины создаваемых/удаляемых элементов
+     8.3: Отслеживание должно работать вне зависимости от глубины создаваемых/удаляемых элементов
 
- Рекомендуется использовать MutationObserver
+     Рекомендуется использовать MutationObserver
 
- Пример:
-   Если в where или в одного из его детей добавляется элемент div
-   то fn должна быть вызвана с аргументом:
-   {
-     type: 'insert',
-     nodes: [div]
-   }
+     Пример:
+       Если в where или в одного из его детей добавляется элемент div
+       то fn должна быть вызвана с аргументом:
+       {
+         type: 'insert',
+         nodes: [div]
+       }
 
-   ------
+       ------
 
-   Если из where или из одного из его детей удаляется элемент div
-   то fn должна быть вызвана с аргументом:
-   {
-     type: 'remove',
-     nodes: [div]
-   }
- */
-function observeChildNodes(where, fn) {}
+       Если из where или из одного из его детей удаляется элемент div
+       то fn должна быть вызвана с аргументом:
+       {
+         type: 'remove',
+         nodes: [div]
+       }
+     */
+function observeChildNodes(where, fn) {
+  const options = { childList: true };
+  const mutationObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.type === 'childList') {
+        fn({
+          type: mutation.addedNodes.length ? 'insert' : 'remove',
+          nodes: [
+            ...(mutation.addedNodes.length ? mutation.addedNodes : mutation.removedNodes),
+          ],
+        });
+      }
+    });
+  });
+
+  mutationObserver.observe(where, options);
+}
 
 export {
   createDivWithText,
