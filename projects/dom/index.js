@@ -225,7 +225,7 @@ function collectDOMStat(root) {
        }
      */
 function observeChildNodes(where, fn) {
-  const options = { childList: true };
+  const options = { childList: true, subtree: true };
   const mutationObserver = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.type === 'childList') {
