@@ -42,13 +42,10 @@ const homeworkContainer = document.querySelector('#app');
  */
 function loadTowns() {
   setLoadingState();
-  return loadAndSortTowns()
-    .then((towns) => {
-      setLoadedState();
-      return towns;
-    })
-    .then((towns) => Promise.resolve(towns))
-    .catch(() => setErrorState());
+  const towns = loadAndSortTowns().catch(() => setErrorState());
+  towns.then(setLoadedState);
+
+  return towns;
 }
 
 /*

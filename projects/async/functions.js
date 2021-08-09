@@ -30,12 +30,10 @@ function delayPromise(seconds) {
 function loadAndSortTowns() {
   return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
     .then((response) => {
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status === 200) {
         return response.json();
       } else {
-        return Promise.reject('Не удалось загрузить список').then((err) => {
-          throw err;
-        });
+        return Promise.reject('Не удалось загрузить список');
       }
     })
     .then((towns) => towns.sort((a, b) => a.name.localeCompare(b.name)));
