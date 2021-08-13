@@ -16,12 +16,53 @@
    homeworkContainer.appendChild(newDiv);
  */
 import './dnd.html';
+import { randomNumber } from '../../scripts/helper';
 
+let current;
 const homeworkContainer = document.querySelector('#app');
 
-document.addEventListener('mousemove', (e) => {});
+document.addEventListener('mousemove', (e) => {
+  if (current) {
+    moveItem(current, e.pageX, e.pageY);
+  }
+});
 
-export function createDiv() {}
+function moveItem(element, x, y) {
+  element.style.left = x - element.offsetWidth / 2 + 'px';
+  element.style.top = y - element.offsetHeight / 2 + 'px';
+}
+
+document.addEventListener('mousedown', (e) => {
+  const target = e.target;
+  if (target.classList.contains('draggable-div')) {
+    current = target;
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  current = null;
+});
+
+export function createDiv() {
+  const div = document.createElement('div');
+  const width = randomNumber(0, 200);
+  const height = randomNumber(0, 200);
+
+  div.className = 'draggable-div';
+
+  div.style.position = 'absolute';
+  div.style.width = width + 'px';
+  div.style.height = height + 'px';
+
+  div.style.top = randomNumber(0, window.innerHeight - height) + 'px';
+  div.style.left = randomNumber(0, window.innerWidth - width) + 'px';
+  div.style.backgroundColor =
+    'rgb(' +
+    [randomNumber(0, 255), randomNumber(0, 255), randomNumber(0, 255)].join(', ') +
+    ')';
+
+  return div;
+}
 
 const addDivButton = homeworkContainer.querySelector('#addDiv');
 

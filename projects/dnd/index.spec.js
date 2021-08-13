@@ -20,7 +20,7 @@ describe('ДЗ 5.2 - Div D&D', () => {
   });
 
   describe('Интеграционное тестирование', () => {
-    it('на старнице должна быть кнопка с id addDiv', () => {
+    it('на странице должна быть кнопка с id addDiv', () => {
       addDivButton = homeworkContainer.querySelector('#addDiv');
       expect(addDivButton).toBeInstanceOf(Element);
       expect(addDivButton.tagName).toBe('BUTTON');
