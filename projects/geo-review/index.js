@@ -91,7 +91,7 @@ document.addEventListener('click', (e) => {
             if (geoObject) {
                 geometry = geoObject.geometry;
             } else {
-                geometry = openBalloon.geometry;
+                geometry = openBalloon.getData().geometry
             }
 
             if (geometry) {
