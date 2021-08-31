@@ -1,7 +1,55 @@
-ymaps.ready(init);
-
 let myMap;
-let placeMarks = geoObjects = [];
+let placeMarks = [];
+let geoObjects = [];
+
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+    await injectYMapsScript();
+    await loadYMaps();
+    initMap();
+}
+
+function injectYMapsScript() {
+    return new Promise((resolve) => {
+        const ymapsScript = document.createElement('script');
+        ymapsScript.src =
+            'https://api-maps.yandex.ru/2.1/?apikey=733a13fb-cb44-483d-a8cd-ffffa487206c&lang=ru_RU';
+        document.body.appendChild(ymapsScript);
+        ymapsScript.addEventListener('load', resolve);
+    });
+}
+
+function loadYMaps() {
+    return new Promise((resolve) => ymaps.ready(resolve));
+}
+
+function initMap() {
+    myMap = new ymaps.Map('map', {
+        center: [59.94, 30.32],
+        zoom: 12,
+        controls: ['zoomControl'],
+        balloonMinWidth: 310,
+    });
+
+    // Событие клика по карте
+    myMap.events.add('click', function (e) {
+        if (!myMap.balloon.isOpen()) {
+            const coords = e.get('coords');
+            getAddressByCoords(coords).then((address) => {
+                myMap.balloon.open(coords, {
+                    contentHeader: address,
+                    contentBody: renderForm()
+                })
+            });
+        } else {
+            myMap.balloon.close();
+        }
+    });
+
+    loadPlaceMarks();
+    fetchMapObjects();
+}
 
 // Рендер формы добавления отзывов
 const balloonTemplate = document.querySelector('#balloon_template').textContent
@@ -130,33 +178,6 @@ document.addEventListener('click', (e) => {
         }
     }
 });
-
-function init() {
-    myMap = new ymaps.Map('map', {
-        center: [59.94, 30.32],
-        zoom: 12,
-        controls: ['zoomControl'],
-        balloonMinWidth: 310,
-    });
-
-    // Событие клика по карте
-    myMap.events.add('click', function (e) {
-        if (!myMap.balloon.isOpen()) {
-            const coords = e.get('coords');
-            getAddressByCoords(coords).then((address) => {
-                myMap.balloon.open(coords, {
-                    contentHeader: address,
-                    contentBody: renderForm()
-                })
-            });
-        } else {
-            myMap.balloon.close();
-        }
-    });
-
-    loadPlaceMarks();
-    fetchMapObjects();
-}
 
 function fetchMapObjects() {
     for (let i = 0; i < placeMarks.length; i++) {
