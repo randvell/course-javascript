@@ -1,8 +1,11 @@
+import './index.html';
+import './css/style.css'
+
 let myMap;
 let placeMarks = [];
 let geoObjects = [];
 
-document.addEventListener('DOMContentLoaded', init);
+init()
 
 async function init() {
     await injectYMapsScript();
@@ -14,7 +17,7 @@ function injectYMapsScript() {
     return new Promise((resolve) => {
         const ymapsScript = document.createElement('script');
         ymapsScript.src =
-            'https://api-maps.yandex.ru/2.1/?apikey=733a13fb-cb44-483d-a8cd-ffffa487206c&lang=ru_RU';
+            'https://api-maps.yandex.ru/2.1/?apikey=5a4c2cfe-31f1-4007-af4e-11db22b6954b&lang=ru_RU';
         document.body.appendChild(ymapsScript);
         ymapsScript.addEventListener('load', resolve);
     });
@@ -52,10 +55,10 @@ function initMap() {
 }
 
 // Рендер формы добавления отзывов
-const balloonTemplate = document.querySelector('#balloon_template').textContent
-const balloonRender = Handlebars.compile(balloonTemplate);
-
 function renderForm(reviews) {
+    const balloonTemplate = document.querySelector('#balloon_template').textContent
+    const balloonRender = Handlebars.compile(balloonTemplate);
+
     let renderObj = {};
     if (Array.isArray(reviews)) {
         renderObj = {reviews: reviews};
