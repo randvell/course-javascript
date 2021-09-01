@@ -1,0 +1,44 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Геоотзыв</title>
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light" rel="stylesheet">
+</head>
+<body>
+<div id="map" class="map"></div>
+
+<script id="balloon_template" type="text/x-handlebars-template">
+    <div class="map__balloon">
+        {{#if reviews}}
+        <div class="reviews__section">
+            {{#each reviews}}
+            <div class="review">
+                <label class="author">{{name}}</label>
+                <label class="text">{{placeName}}</label>
+                <label class="text">{{reviewDate}}</label><br>
+                <label class="text">{{reviewText}}</label>
+            </div>
+            {{/each}}
+        </div>
+        <hr>
+        {{/if}}
+        <h3>Отзыв:</h3>
+        <form class="review__form">
+            <label>
+                <input type="text" id="review-name" placeholder="Укажите ваше имя"/>
+            </label>
+            <label>
+                <input type="text" id="review-place" placeholder="Укажите место"/>
+            </label>
+            <label>
+                <input type="text" id="review-text" placeholder="Оставить отзыв" class="field__big"/>
+            </label>
+            <button class="send__review">Добавить</button>
+        </form>
+    </div>
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js" type="text/javascript"></script>
+<script src="index.js" type="text/javascript"></script>
+</body>
